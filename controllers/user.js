@@ -1,4 +1,4 @@
-const { comparePassword } = require('../helpers/bcrypt');
+const { comparePassword, hashPassword } = require('../helpers/bcrypt');
 const { generateToken } = require('../helpers/jwt');
 
 const { Member, Author } = require('../models')
@@ -9,7 +9,7 @@ class UserController{
         Member.create({
             name,
             email,
-            password
+            password: hashPassword(password)
         })
         .then(Member => {
             res.status(201).json({user: Member})
@@ -22,7 +22,7 @@ class UserController{
         Author.create({
             name,
             email,
-            password
+            password: hashPassword(password)
         })
         .then(Author => {
             res.status(201).json({user: Author})
@@ -39,7 +39,7 @@ class UserController{
             }
         })
         .then(member => {
-            if (comparePassword(password, member.password)){
+            if (member && comparePassword(password, member.password)){
                 let payload = {
                     id: member.id,
                     email: member.email
@@ -56,7 +56,7 @@ class UserController{
             }
         })
         .then(author => {
-            if (comparePassword(password, author.password)){
+            if (author && comparePassword(password, author.password)){
                 let payload = {
                     id: author.id,
                     email: author.email
@@ -70,9 +70,9 @@ class UserController{
         Promise.all([memberPromise, authorPromise])
           .then(([memberResult, authorResult]) => {
             if (memberResult) {
-              res.status(200).json(memberResult);
+                res.redirect('/')
             } else if (authorResult) {
-              res.status(200).json(authorResult);
+                res.redirect('/')
             } else {
               res.status(401).json({ message: 'Invalid email/password' });
             }

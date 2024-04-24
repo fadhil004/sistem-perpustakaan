@@ -1,16 +1,22 @@
 const { Book, Loan, Author} = require('../models')
 
 class BookController{
-    static showAll(req, res, next){
+    static index(req, res, next){
         Book.findAll()
         .then(books => {
-            res.status(200).json(books)
             res.render('home', {books})
+            res.status(200).json(books)
         })
         .catch(next)
     }
 
-    static showAdd(req, res, next){}
+    static showAdd(req, res, next){
+        Book.findByPk(req.params.id)
+        .then(book => {
+            res.render('editBook', {book})
+        })
+        .catch(next)
+    }
     static showEdit(req, res, next){}
 
     static create(req, res, next){
