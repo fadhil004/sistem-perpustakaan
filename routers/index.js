@@ -27,10 +27,9 @@ router.get('/books/add', (req,res) => {
     res.render('createBook')
 })
 router.post('/books/loan/:id', BookController.loan)
-router.use(authorization)
-router.get('/books/edit', BookController.showEdit)
+router.get('/books/edit/:id', BookController.showEdit)
 router.post('/books/add', BookController.create)
-router.patch('/books/edit/:id', BookController.update)
-router.delete('/books/delete/:id', BookController.delete)
+router.post('/books/edit/:id', BookController.update)
+router.get('/books/delete/:id', BookController.delete)
 
 module.exports = router

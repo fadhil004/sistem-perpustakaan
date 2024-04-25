@@ -5,7 +5,6 @@ class BookController{
         Book.findAll()
         .then(books => {
             res.render('home', {books})
-            res.status(200).json(books)
         })
         .catch(next)
     }
@@ -24,24 +23,16 @@ class BookController{
     }
 
     static create(req, res, next){
-        let authorName
-        const authorId = req.decoded.id
-        const {title,releaseDate,genre,stock} = req.body
-        Author.findByPk(authorId)
-        .then(author => {
-            authorName = author.name
-
-            return Book.create({
-                title,
-                author: authorName,
-                releaseDate,
-                genre,
-                stock: Number(stock),
-                authorId: authorId
-            })
+        const {title,releaseDate,genre,stock,author} = req.body
+        Book.create({
+            title,
+            author,
+            releaseDate,
+            genre,
+            stock: Number(stock),
         })
-        .then(book => {
-            res.status(201).json(book)
+        .then(author => {
+            res.redirect('/')
         })
         .catch(next)
     }
@@ -67,16 +58,20 @@ class BookController{
     }
 
     static update(req, res, next){
-        const authorId = req.decoded.id
-        const bookId = req.params.id
-
-        Book.update(req.body, {
+        const updatedProduct = {
+            title: req.body.title,
+            author: req.body.author,
+            genre: req.body.genre,
+            releaseDate: new Date(req.body.releaseDate),
+            stock: Number(req.body.stock)
+        }
+        Book.update(updatedProduct, {
             where: {
                 id: req.params.id
-            }
+            },
         })
-        .then(result => {
-            res.status(200).json(result)
+        .then(books => {
+            res.redirect('/')
         })
         .catch(next)
     }
@@ -88,7 +83,7 @@ class BookController{
             }
         })
         .then(result => {
-            res.status(200).json(result)
+            res.redirect('/')
         })
         .catch(next)
     }

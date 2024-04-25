@@ -1,5 +1,5 @@
 const { comparePassword, hashPassword } = require('../helpers/bcrypt');
-
+const { generateToken } = require('../helpers/jwt')
 const { Member, Author } = require('../models')
 
 class UserController{
@@ -8,10 +8,10 @@ class UserController{
         Member.create({
             name,
             email,
-            password: hashPassword(password)
+            password
         })
         .then(Member => {
-            res.status(201).json({user: Member})
+            res.redirect('/')
         })
         .catch(next)
     }
@@ -21,10 +21,10 @@ class UserController{
         Author.create({
             name,
             email,
-            password: hashPassword(password)
+            password
         })
         .then(Author => {
-            res.status(201).json({user: Author})
+            res.redirect('/')
         })
         .catch(next)
     }
@@ -73,7 +73,7 @@ class UserController{
             } else if (authorResult) {
                 res.redirect('/')
             } else {
-              res.status(401).json({ message: 'Invalid email/password' });
+              res.json({ message: 'Invalid email/password' });
             }
           })
           .catch(next);
