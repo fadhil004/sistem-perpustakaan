@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router()
 const BookController = require('../controllers/book')
-const UserController = require('../controllers/user')
+const UserController = require('../controllers/user');
+const { authentication } = require('../middlewares/authentication');
+const { authorization } = require('../middlewares/authorization');
 
 
 
@@ -18,16 +20,16 @@ router.get('/register', (req,res) => {
 router.get('/register/author', (req,res) => {
     res.render('register-author')
 })
+
+
+router.get('/', BookController.index)
 router.get('/books/add', (req,res) => {
     res.render('createBook')
 })
-
-router.get('/', BookController.index)
-router.get('/books/add', BookController.showAdd)
-router.get('/books/edit', BookController.showEdit)
-
-router.post('/books/add', BookController.create)
 router.post('/books/loan/:id', BookController.loan)
+router.use(authorization)
+router.get('/books/edit', BookController.showEdit)
+router.post('/books/add', BookController.create)
 router.patch('/books/edit/:id', BookController.update)
 router.delete('/books/delete/:id', BookController.delete)
 

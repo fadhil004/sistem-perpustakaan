@@ -10,14 +10,18 @@ class BookController{
         .catch(next)
     }
 
-    static showAdd(req, res, next){
+    static showEdit(req, res, next){
+        const bookId = req.params.id
+        if(!bookId) {
+            return res.redirect('/')
+        }
+
         Book.findByPk(req.params.id)
         .then(book => {
             res.render('editBook', {book})
         })
         .catch(next)
     }
-    static showEdit(req, res, next){}
 
     static create(req, res, next){
         let authorName
@@ -63,6 +67,9 @@ class BookController{
     }
 
     static update(req, res, next){
+        const authorId = req.decoded.id
+        const bookId = req.params.id
+
         Book.update(req.body, {
             where: {
                 id: req.params.id
