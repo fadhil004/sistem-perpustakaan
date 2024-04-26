@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Book.belongsTo(models.Author)
       Book.belongsToMany(models.Member, {
-        through: 'Loan'
+        through: 'Loan',
+        unique: false
       })
     }
   }
@@ -25,6 +26,25 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Book',
+    hooks: {
+      beforeCreate: async function (book, op) {
+        try {
+          const foundAuthor = await sequelize.models.Author.findOne({
+            where: {
+              name: book.author
+            }
+          });
+          if (foundAuthor) {
+            book.AuthorId = foundAuthor.id;
+          } else {
+            throw new Error('Author not found');
+          }
+        } catch (error) {
+          console.error('Error in beforeCreate hook:', error);
+          throw error; // Throw error to be caught by the calling function
+        }
+      }
+    }
   });
   return Book;
 };

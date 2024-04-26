@@ -1,4 +1,6 @@
-const { Book, Loan, Author} = require('../models')
+const { Book, Author, sequelize} = require('../models')
+
+
 
 class BookController{
     static index(req, res, next){
@@ -38,24 +40,44 @@ class BookController{
     }
 
     static loan(req, res, next){
-        Book.findByPk(req.params.id)
-        .then(book => {
-            if (book.stock < 1){
-                throw new Error('Book is out of stock')
+        const memberId = 1; // Ganti dengan req.decoded.id jika sudah ada
+        const bookId = req.params.id;
+    
+        // Periksa apakah pengguna sudah pernah meminjam buku ini sebelumnya
+        sequelize.models.Loan.findOne({
+            where: {
+                BookId: bookId,
+                MemberId: memberId
             }
-            book.stock -= 1
-            return book.save()
         })
-        .then(book => {
-            res.status(200).json({message: 'Book loaned successfully'})
-            return Loan.create({
-                bookId: req.params.id,
-                memberId: req.decoded.id,
-                loanedAt: new Date()
-            })
+        .then(existingLoan => {
+            if(existingLoan) {
+                return res.status(400).json({ message: 'You have already borrowed this book' });
+            } else {
+                Book.findByPk(bookId)
+                .then(book => {
+                    if (book.stock < 1){
+                        return res.status(400).json({ message: 'Book is out of stock' });
+                    }
+                    book.stock -= 1;
+                    return book.save();
+                })
+                .then(book => {
+                    sequelize.models.Loan.create({
+                        BookId: book.id,
+                        MemberId: memberId
+                    })
+                    .then(loan => {
+                        res.status(200).json({ message: 'Book loaned successfully' });
+                    })
+                    .catch(next);
+                })
+                .catch(next);
+            }
         })
-        .catch(next)
+        .catch(next);
     }
+    
 
     static update(req, res, next){
         const updatedProduct = {

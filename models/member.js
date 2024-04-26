@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Member.belongsToMany(models.Book, {
-        through: 'Loan'
+        through: 'Loan',
+        unique: false
       })
     }
   }

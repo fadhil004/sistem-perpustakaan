@@ -26,9 +26,9 @@ router.get('/', BookController.index)
 router.get('/books/add', (req,res) => {
     res.render('createBook')
 })
+router.post('/books/add', BookController.create)
 router.post('/books/loan/:id', BookController.loan)
 router.get('/books/edit/:id', BookController.showEdit)
-router.post('/books/add', BookController.create)
 router.post('/books/edit/:id', BookController.update)
 router.get('/books/delete/:id', BookController.delete)
 

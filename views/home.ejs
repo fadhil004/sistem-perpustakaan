@@ -185,8 +185,11 @@ table.table td .add {
                         <td><%= `${books[i].author}` %></td>
                         <td><%= `${books[i].releaseDate}` %></td>
                         <td>
-                            <a href="/books/edit/<%= books[i].id %>" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                            <a href="/books/delete/<%= books[i].id %>" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                            <a href="/books/edit/<%= books[i].id %>" class="edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                            <a href="/books/delete/<%= books[i].id %>" class="delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                            <form action="/books/loan/<%= books[i].id %>" method="POST">
+                                <button type="submit" class="loan" data-toggle="tooltip"><i class="material-icons">&#xE854;</i></button>
+                            </form>                            
                         </td>
                     </tr> 
                     <% } %> 
