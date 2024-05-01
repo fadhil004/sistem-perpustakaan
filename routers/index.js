@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router()
 const BookController = require('../controllers/book')
 const UserController = require('../controllers/user');
-const { authentication } = require('../middlewares/authentication');
-const { authorization } = require('../middlewares/authorization');
 
 
 
