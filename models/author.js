@@ -16,11 +16,28 @@ module.exports = (sequelize, DataTypes) => {
   }
   Author.init({
     name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isEmail: {
+          msg: 'Email tidak valid'
+        }
+      }
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [8, 255] // Memastikan password terdiri dari minimal 8 karakter
+      }
+    },
     sale: {
       type: DataTypes.INTEGER,
-      defaultValue: 0
+      defaultValue: 0,
+      validate: {
+        min: 0 // Memastikan sale selalu positif
+      }
     }
   }, {
     sequelize,

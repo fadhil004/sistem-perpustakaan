@@ -22,7 +22,12 @@ module.exports = (sequelize, DataTypes) => {
     author: DataTypes.STRING,
     releaseDate: DataTypes.DATE,
     genre: DataTypes.STRING,
-    stock: DataTypes.INTEGER
+    stock: {
+      type: DataTypes.INTEGER,
+      validate: {
+        min: 0
+      }
+    }
   }, {
     sequelize,
     modelName: 'Book',
@@ -41,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
           }
         } catch (error) {
           console.error('Error in beforeCreate hook:', error);
-          throw error; // Throw error to be caught by the calling function
+          throw error; 
         }
       }
     }

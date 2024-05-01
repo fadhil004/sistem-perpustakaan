@@ -1,4 +1,4 @@
-const { comparePassword, hashPassword } = require('../helpers/bcrypt');
+const { comparePassword } = require('../helpers/bcrypt');
 const { generateToken } = require('../helpers/jwt')
 const { Member, Author } = require('../models')
 
